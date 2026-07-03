@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
 import { CartProvider } from '@/hooks/useCart'
+import { AuthProvider } from '@/hooks/useAuth'
 import { ChatButton } from '@/components/whatsapp/ChatButton'
+import { Preloader } from '@/components/layout/Preloader'
 import './globals.css'
 
 const inter = Inter({
@@ -28,10 +30,13 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${inter.variable} ${playfair.variable}`}>
       <body className="min-h-screen">
-        <CartProvider>
-          {children}
-          <ChatButton />
-        </CartProvider>
+        <AuthProvider>
+          <CartProvider>
+            <Preloader />
+            {children}
+            <ChatButton />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   )

@@ -1,9 +1,54 @@
+'use client'
+
 import Link from 'next/link'
+import { ShoppingBag, Star } from 'lucide-react'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 import { Button } from '@/components/ui/Button'
+import { Badge } from '@/components/ui/Badge'
+import { Carousel } from '@/components/ui/Carousel'
+import { formatCurrency } from '@/lib/utils'
+import { useCart } from '@/hooks/useCart'
 import { products } from '@/lib/demo-data'
-import { ProductCard } from '@/components/catalog/ProductCard'
+
+function FeaturedSlide({ product }: { product: (typeof products)[0] }) {
+  const { addItem } = useCart()
+  return (
+    <div className="relative flex flex-col lg:flex-row items-center bg-gradient-to-br from-ivory to-cream min-h-[400px]">
+      <div className="flex-1 p-8 lg:p-12">
+        <Badge variant="gold">Destacado</Badge>
+        <h3 className="mt-3 font-serif text-2xl font-bold text-charcoal lg:text-3xl">
+          {product.name}
+        </h3>
+        <p className="mt-2 text-sm leading-relaxed text-warm-gray line-clamp-3">
+          {product.description}
+        </p>
+        <div className="mt-4 flex items-center gap-2 text-xs text-warm-gray">
+          <Star className="size-3.5 fill-gold text-gold" />
+          <span>{product.notes?.split(',')[0] || 'Premium'}</span>
+        </div>
+        <div className="mt-6 flex items-center gap-4">
+          <span className="font-serif text-2xl font-bold text-gold-dark">
+            {formatCurrency(product.price)}
+          </span>
+          <Button size="sm" onClick={() => addItem(product)}>
+            <ShoppingBag className="size-4" /> Agregar
+          </Button>
+          <Link href={`/producto/${product.id}`}>
+            <Button variant="outline" size="sm">Ver detalle</Button>
+          </Link>
+        </div>
+      </div>
+      <div className="w-full lg:w-1/2 aspect-square lg:aspect-auto lg:h-[400px]">
+        <img
+          src={product.image_url}
+          alt={product.name}
+          className="size-full object-cover"
+        />
+      </div>
+    </div>
+  )
+}
 
 export default function HomePage() {
   const featured = products.filter((p) => p.featured)
@@ -59,10 +104,13 @@ export default function HomePage() {
                   Ver todos →
                 </Link>
               </div>
-              <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-                {featured.slice(0, 4).map((product) => (
-                  <ProductCard key={product.id} product={product} />
-                ))}
+              <div className="mt-10">
+                <Carousel
+                  items={featured}
+                  renderItem={(product) => <FeaturedSlide product={product} />}
+                  autoPlayInterval={5000}
+                  className="group"
+                />
               </div>
             </div>
           </section>
