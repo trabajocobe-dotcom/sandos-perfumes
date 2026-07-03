@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Lock, LogIn } from 'lucide-react'
-import { Card } from '@/components/ui/Card'
-import { Input } from '@/components/ui/Input'
+import { Lock, LogIn, ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 import { useAuth } from '@/hooks/useAuth'
+import Link from 'next/link'
 
 export default function DashboardLoginPage() {
   const router = useRouter()
@@ -31,17 +31,27 @@ export default function DashboardLoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cream px-4">
-      <div className="w-full max-w-sm">
-        <div className="mb-8 text-center">
-          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-charcoal">
+    <div className="relative flex min-h-screen items-center justify-center bg-charcoal px-4 overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-gold/5 via-transparent to-transparent" />
+
+      <div className="relative w-full max-w-sm">
+        <Link
+          href="/"
+          className="mb-8 inline-flex items-center gap-1.5 text-sm text-cream/40 hover:text-cream transition-colors"
+        >
+          <ArrowLeft className="size-4" />
+          Volver al inicio
+        </Link>
+
+        <div className="mb-6 text-center">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-gold/10 border border-gold/20">
             <Lock className="size-6 text-gold" />
           </div>
-          <h1 className="mt-4 font-serif text-2xl font-bold text-charcoal">Dashboard</h1>
-          <p className="mt-1 text-sm text-warm-gray">Ingresá con tu cuenta de administrador</p>
+          <h1 className="mt-4 font-serif text-2xl font-bold text-cream">Dashboard</h1>
+          <p className="mt-1 text-sm text-cream/50">Ingresá con tu cuenta de administrador</p>
         </div>
 
-        <Card className="p-6">
+        <div className="rounded-2xl bg-glass-card p-8 backdrop-blur-xl">
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               label="Email"
@@ -49,6 +59,7 @@ export default function DashboardLoginPage() {
               placeholder="admin@sandos.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              className="bg-cream/5 border-cream/10 text-cream placeholder:text-cream/30"
               required
             />
             <Input
@@ -57,11 +68,12 @@ export default function DashboardLoginPage() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="bg-cream/5 border-cream/10 text-cream placeholder:text-cream/30"
               required
             />
 
             {error && (
-              <p className="text-xs text-red-500 text-center">{error}</p>
+              <p className="text-xs text-red-400 text-center bg-red-900/20 rounded-lg px-3 py-2">{error}</p>
             )}
 
             <Button type="submit" className="w-full" disabled={loading}>
@@ -70,10 +82,10 @@ export default function DashboardLoginPage() {
             </Button>
           </form>
 
-          <p className="mt-4 text-center text-xs text-warm-gray-light">
+          <p className="mt-4 text-center text-xs text-cream/30">
             Demo: admin@sandos.com / admin123
           </p>
-        </Card>
+        </div>
       </div>
     </div>
   )

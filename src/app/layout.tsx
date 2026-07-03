@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter, Playfair_Display } from 'next/font/google'
 import { CartProvider } from '@/hooks/useCart'
 import { AuthProvider } from '@/hooks/useAuth'
+import { ToastProvider } from '@/components/ui/Toast'
+import { BackToTop } from '@/components/ui/BackToTop'
 import { ChatButton } from '@/components/whatsapp/ChatButton'
 import { Preloader } from '@/components/layout/Preloader'
 import './globals.css'
@@ -29,12 +31,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es" className={`${inter.variable} ${playfair.variable}`}>
-      <body className="min-h-screen">
+      <body className="min-h-screen bg-charcoal text-cream">
         <AuthProvider>
           <CartProvider>
-            <Preloader />
-            {children}
-            <ChatButton />
+            <ToastProvider>
+              <Preloader />
+              {children}
+              <BackToTop />
+              <ChatButton />
+            </ToastProvider>
           </CartProvider>
         </AuthProvider>
       </body>

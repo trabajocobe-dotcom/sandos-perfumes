@@ -2,13 +2,13 @@ import { forwardRef } from 'react'
 
 const variants = {
   primary:
-    'bg-charcoal text-white hover:bg-charcoal/90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal',
+    'bg-charcoal text-cream border border-cream/10 hover:bg-charcoal/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
   secondary:
-    'bg-gold text-charcoal hover:bg-gold-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
+    'bg-gradient-to-r from-gold to-gold-dark text-charcoal font-semibold hover:from-gold-dark hover:to-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold glow-gold-sm',
   outline:
-    'border border-charcoal/20 text-charcoal hover:bg-charcoal/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal',
+    'border border-gold/30 text-gold-light hover:bg-gold/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
   ghost:
-    'text-warm-gray hover:text-charcoal hover:bg-charcoal/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal',
+    'text-cream/60 hover:text-cream hover:bg-cream/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
 }
 
 const sizes = {

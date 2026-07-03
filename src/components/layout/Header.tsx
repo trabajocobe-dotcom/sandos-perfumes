@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ShoppingBag, Menu, X, User } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { useCart } from '@/hooks/useCart'
@@ -15,16 +15,27 @@ const navLinks = [
 
 export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [scrolled, setScrolled] = useState(false)
   const { itemCount } = useCart()
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 60)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
-    <header className="sticky top-0 z-40 border-b border-charcoal/5 bg-cream/90 backdrop-blur-md">
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled ? 'bg-glass border-b border-cream/5' : 'bg-transparent'
+      }`}
+    >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-2">
-          <span className="font-serif text-xl font-bold tracking-tight text-charcoal">
+          <span className="font-serif text-xl font-bold tracking-tight text-cream">
             Sandós
           </span>
-          <span className="hidden text-sm text-warm-gray sm:inline">Perfumes</span>
+          <span className="hidden text-sm text-cream/50 sm:inline">Perfumes</span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -32,7 +43,7 @@ export function Header() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-sm text-warm-gray transition-colors hover:text-charcoal"
+              className="text-sm text-cream/60 transition-colors hover:text-cream"
             >
               {link.label}
             </Link>
@@ -42,7 +53,7 @@ export function Header() {
         <div className="flex items-center gap-3">
           <Link
             href="/carrito"
-            className="relative rounded-lg p-2 text-warm-gray transition-colors hover:text-charcoal"
+            className="relative rounded-lg p-2 text-cream/60 transition-colors hover:text-cream"
           >
             <ShoppingBag className="size-5" />
             {itemCount > 0 && (
@@ -61,7 +72,7 @@ export function Header() {
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="rounded-lg p-2 text-warm-gray hover:text-charcoal md:hidden"
+            className="rounded-lg p-2 text-cream/60 hover:text-cream md:hidden cursor-pointer"
           >
             {mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
           </button>
@@ -69,18 +80,25 @@ export function Header() {
       </div>
 
       {mobileOpen && (
-        <div className="border-t border-charcoal/5 px-4 pb-4 pt-2 md:hidden">
-          <nav className="flex flex-col gap-2">
+        <div className="border-t border-cream/5 bg-glass px-4 pb-5 pt-3 md:hidden">
+          <nav className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="rounded-lg px-3 py-2 text-sm text-warm-gray transition-colors hover:bg-charcoal/5 hover:text-charcoal"
+                className="rounded-lg px-3 py-2.5 text-sm text-cream/60 transition-colors hover:bg-cream/5 hover:text-cream"
               >
                 {link.label}
               </Link>
             ))}
+            <Link
+              href="/auth/login"
+              onClick={() => setMobileOpen(false)}
+              className="mt-2 rounded-lg bg-gold/10 border border-gold/20 px-3 py-2.5 text-sm text-gold-light text-center"
+            >
+              Ingresar
+            </Link>
           </nav>
         </div>
       )}
