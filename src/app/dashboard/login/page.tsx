@@ -16,21 +16,18 @@ export default function DashboardLoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setLoading(true)
 
-    // Simular latencia
-    setTimeout(() => {
-      const ok = login(email, password)
-      if (ok) {
-        router.push('/dashboard')
-      } else {
-        setError('Email o contraseña incorrectos')
-        setLoading(false)
-      }
-    }, 400)
+    const ok = await login(email, password)
+    if (ok) {
+      router.push('/dashboard')
+    } else {
+      setError('Email o contraseña incorrectos')
+      setLoading(false)
+    }
   }
 
   return (

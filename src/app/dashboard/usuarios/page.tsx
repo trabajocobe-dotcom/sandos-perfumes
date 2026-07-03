@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/Badge'
 import { Dialog } from '@/components/ui/Dialog'
 import { Select } from '@/components/ui/Select'
 import { useAuth } from '@/hooks/useAuth'
-import type { UserRole, AuthUser } from '@/lib/local-auth'
+import type { UserRole, AuthUser } from '@/lib/auth-types'
 
 const roleLabels: Record<UserRole, string> = {
   'super-admin': 'Super Admin',
@@ -39,42 +39,42 @@ export default function UsersPage() {
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
-  const refresh = () => setUsers(getUsers())
+  const refresh = async () => setUsers(await getUsers())
 
   useEffect(() => { refresh() }, [getUsers])
 
-  const handleCreate = (e: React.FormEvent) => {
+  const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     setSuccess('')
     try {
-      createUser(newEmail, newName, newPassword, newRole)
+      await createUser(newEmail, newName, newPassword, newRole)
       setSuccess('Usuario creado correctamente')
       setNewEmail('')
       setNewName('')
       setNewPassword('')
       setNewRole('admin')
-      refresh()
+      await refresh()
       setTimeout(() => setShowModal(false), 800)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al crear usuario')
     }
   }
 
-  const handleRoleChange = (userId: string, newRole: string) => {
+  const handleRoleChange = async (userId: string, newRole: string) => {
     try {
-      updateRole(userId, newRole as UserRole)
-      refresh()
+      await updateRole(userId, newRole as UserRole)
+      await refresh()
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Error')
     }
   }
 
-  const handleDelete = (userId: string) => {
+  const handleDelete = async (userId: string) => {
     if (!confirm('¿Eliminar este usuario?')) return
     try {
-      deleteUser(userId)
-      refresh()
+      await deleteUser(userId)
+      await refresh()
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Error')
     }
