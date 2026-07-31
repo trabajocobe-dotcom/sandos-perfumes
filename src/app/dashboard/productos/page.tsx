@@ -2,7 +2,9 @@
 
 /* eslint-disable @next/next/no-img-element -- Miniaturas del panel: la URL la
    escribe el administrador a mano y puede apuntar a cualquier dominio, que no
-   estaría en images.remotePatterns. next/image fallaría; <img> degrada bien. */
+   estaría en images.remotePatterns. next/image fallaría ahí; la etiqueta nativa
+   degrada bien. Las dos apariciones van sobre un fondo tintado y la del
+   formulario solo se pinta si ya hay URL, así que nunca queda un hueco roto. */
 
 import { useState } from 'react'
 import { Plus, Search, Edit3, Trash2, Copy, Star } from 'lucide-react'
@@ -190,10 +192,20 @@ export default function ProductsPage() {
                         {product.stock === 0 ? 'Agotado' : product.stock <= 3 ? 'Stock bajo' : 'Disponible'}
                       </Badge>
                     </td>
+                    {/* Los botones de fila median 14 px y solo tenían `title`,
+                        que no llega a los lectores de pantalla ni sirve con el
+                        dedo. Ahora cuadran 32 px y dicen sobre qué producto
+                        actúan, porque en una tabla "Editar" a secas no basta. */}
                     <td className="p-4">
                       <button
                         onClick={() => toggleFeatured(product.id)}
-                        className={`transition-colors cursor-pointer ${product.featured ? 'text-gilt' : 'text-bone-3 hover:text-bone-2'}`}
+                        aria-pressed={product.featured}
+                        aria-label={
+                          product.featured
+                            ? `Quitar ${product.name} de destacados`
+                            : `Destacar ${product.name}`
+                        }
+                        className={`grid size-8 place-items-center rounded-lg transition-colors cursor-pointer ${product.featured ? 'text-gilt' : 'text-bone-3 hover:text-bone-2'}`}
                       >
                         <Star className={`size-4 ${product.featured ? 'fill-gilt' : ''}`} />
                       </button>
@@ -202,22 +214,22 @@ export default function ProductsPage() {
                       <div className="flex gap-1">
                         <button
                           onClick={() => openEdit(product)}
-                          className="rounded-lg p-1.5 text-bone-3 hover:text-gilt hover:bg-gilt/5 transition-colors cursor-pointer"
-                          title="Editar"
+                          aria-label={`Editar ${product.name}`}
+                          className="grid size-8 place-items-center rounded-lg text-bone-3 hover:text-gilt hover:bg-gilt/5 transition-colors cursor-pointer"
                         >
                           <Edit3 className="size-3.5" />
                         </button>
                         <button
                           onClick={() => handleDuplicate(product)}
-                          className="rounded-lg p-1.5 text-bone-3 hover:text-bone hover:bg-ink-sunken transition-colors cursor-pointer"
-                          title="Duplicar"
+                          aria-label={`Duplicar ${product.name}`}
+                          className="grid size-8 place-items-center rounded-lg text-bone-3 hover:text-bone hover:bg-ink-sunken transition-colors cursor-pointer"
                         >
                           <Copy className="size-3.5" />
                         </button>
                         <button
                           onClick={() => handleDelete(product.id)}
-                          className="rounded-lg p-1.5 text-bone-3 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
-                          title="Eliminar"
+                          aria-label={`Eliminar ${product.name}`}
+                          className="grid size-8 place-items-center rounded-lg text-bone-3 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
                         >
                           <Trash2 className="size-3.5" />
                         </button>

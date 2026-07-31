@@ -102,8 +102,14 @@ export default function DashboardLayout({
         </div>
       </aside>
 
-      {/* Mobile header */}
-      <div className="flex flex-1 flex-col">
+      {/*
+        `min-w-0` no es decorativo: un hijo de flex trae `min-width: auto`, así
+        que se niega a encogerse por debajo del ancho de su contenido. Con el
+        menú móvil de diez enlaces adentro, esta columna medía 774 px en una
+        pantalla de 390 y arrastraba TODO el panel fuera de cuadro. Es también
+        lo que impedía que las tablas usaran su propio scroll horizontal.
+      */}
+      <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 border-b border-ink-line bg-ink-raised/90 backdrop-blur-sm px-4 py-3 lg:px-6 lg:py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
