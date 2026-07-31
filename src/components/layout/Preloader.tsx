@@ -1,71 +1,95 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { Logo, LogoMark } from '@/components/brand/Logo'
+import { cn } from '@/lib/utils'
 
+/**
+ * Cuánto se ve el velo, en milisegundos.
+ *
+ * `min` evita el parpadeo: sin un piso, en una carga rápida el logo aparece y
+ * desaparece en un cuadro y se lee como un defecto. `max` es el seguro: si una
+ * imagen tarda o nunca llega, el velo se va igual y nadie queda encerrado.
+ *
+ * La primera visita de la sesión muestra el logo completo; las siguientes, solo
+ * el emblema y más corto, porque la marca ya se presentó.
+ */
+const TIEMPOS = {
+  intro: { min: 1800, max: 3000 },
+  nav: { min: 500, max: 1200 },
+} as const
+
+const YA_VISTO = 'sandos_intro_visto'
+
+/**
+ * Velo de carga con la marca.
+ *
+ * Se renderiza también en el servidor —si esperara al montaje, el sitio asomaría
+ * un instante antes de taparse y el efecto sería peor que no tenerlo— y se
+ * retira solo, sin dejar nodo en el DOM.
+ *
+ * Cuál de los dos logos se ve lo decide un atributo `data-variante` escrito
+ * sobre el nodo, no un estado de React: el servidor no puede leer
+ * `sessionStorage`, así que cualquier estado inicial distinto rompería la
+ * hidratación. Los dos logos van en el HTML y CSS esconde el que sobra.
+ */
 export function Preloader() {
-  const [show, setShow] = useState(true)
-  const [fade, setFade] = useState(false)
+  const velo = useRef<HTMLDivElement>(null)
+  const [oculto, setOculto] = useState(false)
+  const [retirado, setRetirado] = useState(false)
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setFade(true)
-      setTimeout(() => setShow(false), 600)
-    }, 2200)
-    return () => clearTimeout(timer)
+    const repetida = sessionStorage.getItem(YA_VISTO) === '1'
+    if (repetida) velo.current?.setAttribute('data-variante', 'nav')
+    else sessionStorage.setItem(YA_VISTO, '1')
+
+    /*
+     * Con movimiento reducido el logo no respira, así que el velo pasa a ser
+     * una pantalla quieta: sostenerla 1,8 s sería hacer esperar sin dar nada a
+     * cambio. Se usa el tiempo corto, el mismo de las navegaciones internas.
+     */
+    const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const { min, max } = TIEMPOS[repetida || quieto ? 'nav' : 'intro']
+    const desde = Date.now()
+    let cerrado = false
+    const temporizadores: number[] = []
+
+    const cerrar = () => {
+      if (cerrado) return
+      cerrado = true
+      temporizadores.push(
+        window.setTimeout(() => setOculto(true), Math.max(0, min - (Date.now() - desde)))
+      )
+    }
+
+    if (document.readyState === 'complete') cerrar()
+    else window.addEventListener('load', cerrar, { once: true })
+    temporizadores.push(window.setTimeout(cerrar, max))
+
+    return () => {
+      window.removeEventListener('load', cerrar)
+      temporizadores.forEach(window.clearTimeout)
+    }
   }, [])
 
-  if (!show) return null
+  if (retirado) return null
 
   return (
     <div
-      className={`fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-charcoal transition-opacity duration-600 ${
-        fade ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}
+      ref={velo}
+      aria-hidden
+      data-variante="intro"
+      onTransitionEnd={() => setRetirado(true)}
+      className={cn(
+        'velo-carga fixed inset-0 z-[300] flex items-center justify-center bg-ink',
+        'transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]',
+        oculto && 'velo-oculto pointer-events-none opacity-0'
+      )}
     >
-      <div className="relative">
-        <div className="absolute inset-0 animate-ping rounded-full bg-gold/20" style={{ animationDuration: '2s' }} />
-
-        <div className="relative flex size-24 items-center justify-center rounded-full bg-gradient-to-br from-gold/20 to-gold/5 border border-gold/30">
-          <svg className="size-10 text-gold" viewBox="0 0 48 48" fill="none">
-            <path
-              d="M24 4C20 4 16 8 16 12v6h-2a4 4 0 0 0-4 4v18a4 4 0 0 0 4 4h20a4 4 0 0 0 4-4V22a4 4 0 0 0-4-4h-2v-6c0-4-4-8-8-8zm-4 12v-4a4 4 0 1 1 8 0v4h-8z"
-              fill="currentColor"
-              opacity="0.8"
-            />
-            <path d="M20 28a4 4 0 1 1 8 0v4a4 4 0 1 1-8 0v-4z" fill="currentColor" opacity="0.4" />
-          </svg>
-        </div>
-      </div>
-
-      <div className="mt-8 text-center">
-        <h1
-          className="font-serif text-4xl tracking-[0.15em] text-cream opacity-0 animate-fade-in"
-          style={{ animation: 'fadeIn 0.8s ease 0.4s forwards' }}
-        >
-          SANDÓS
-        </h1>
-        <div
-          className="mx-auto mt-2 h-px w-0 bg-gold/60 opacity-0"
-          style={{ animation: 'expandLine 0.8s ease 1s forwards' }}
-        />
-        <p
-          className="mt-3 text-xs tracking-[0.3em] uppercase text-cream/50 opacity-0"
-          style={{ animation: 'fadeIn 0.6s ease 1.4s forwards' }}
-        >
-          Perfumes
-        </p>
-      </div>
-
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          @keyframes fadeIn {
-            to { opacity: 1; }
-          }
-          @keyframes expandLine {
-            to { width: 60px; opacity: 1; }
-          }
-        `
-      }} />
+      <span className="animate-breathe motion-reduce:animate-none">
+        <Logo variant="stacked" className="velo-intro text-bone" />
+        <LogoMark className="velo-nav h-16" />
+      </span>
     </div>
   )
 }

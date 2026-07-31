@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sandós Perfumes
 
-## Getting Started
+Tienda de perfumería importada. Next.js 16 (App Router) + React 19 + Tailwind CSS 4 + TypeScript.
 
-First, run the development server:
+## Puesta en marcha
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+El sitio queda en `http://localhost:3000`. El panel de administración está en
+`/dashboard` (cuenta de demostración: `admin@sandos.com` / `admin123`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Estructura
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+src/
+├── app/
+│   ├── (tienda)/          Grupo de rutas de la tienda pública. Su layout aporta
+│   │                      barra de anuncios, header, footer, carrito y ayuda.
+│   │   ├── page.tsx           Home
+│   │   ├── catalogo/          Catálogo con filtros en la URL
+│   │   ├── producto/[slug]/   Ficha (SSG + JSON-LD de Product)
+│   │   ├── quiz/              Test de firma olfativa
+│   │   ├── muestras/          Armado del set de descubrimiento
+│   │   └── carrito/ checkout/ favoritos/ legal/[slug]/
+│   ├── dashboard/         Panel de administración (superficie clara, clase .panel)
+│   ├── auth/              Login de clientes
+│   ├── globals.css        Sistema de diseño completo (tokens + componentes)
+│   └── sitemap.ts robots.ts
+├── components/
+│   ├── commerce/          Card de producto, carrito lateral, buscador, newsletter
+│   ├── catalog/           Vista y panel de filtros del catálogo
+│   ├── fragrance/         Pirámide olfativa y medidores de duración/estela
+│   └── product/ quiz/ home/ layout/ ui/
+├── hooks/                 Carrito, favoritos, vistos, sesión, datos de cliente
+├── lib/
+│   ├── demo-data.ts       Catálogo, familias y reseñas (fuente única)
+│   ├── catalog.ts         Búsqueda, filtros, orden y recomendaciones
+│   ├── quiz.ts            Preguntas y puntuación del test olfativo
+│   ├── site.ts            Datos del negocio (contacto, envíos, umbrales)
+│   ├── whatsapp.ts        Armado de mensajes de pedido
+│   ├── legal.ts           Contenido de las páginas legales y de ayuda
+│   └── persistent-store.ts  Store en localStorage seguro para hidratación
+└── types/index.ts         Modelo de dominio
+```
 
-## Learn More
+## Sistema de diseño
 
-To learn more about Next.js, take a look at the following resources:
+Dirección: **Editorial Noir** — lujo editorial sobre negro cálido. Las reglas
+están escritas al principio de `src/app/globals.css` y son vinculantes:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Token | Valor | Uso |
+|---|---|---|
+| `--color-ink` | `#0a0908` | Fondo base (negro cálido, nunca `#000`) |
+| `--color-bone` | `#f2ede6` | Texto principal (nunca `#fff`) |
+| `--color-gilt` | `#c8a24a` | **Único** color de acción: CTAs e interacción |
+| `--radius-brand` | `2px` | Radio identitario, repetido en todo |
+| `--font-display` | Bodoni Moda | Solo en tamaños grandes |
+| `--font-sans` | Inter | Todo el texto funcional |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Un solo sistema decorativo: `haze` (luz cálida difusa) más grano de película.
+No se mezclan glassmorphism, sombras de color ni gradientes decorativos.
 
-## Deploy on Vercel
+El panel de administración usa la clase `.panel`, que redefine únicamente los
+tokens de superficie y texto para dar una versión clara del mismo sistema.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Datos
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+El catálogo vive en `src/lib/demo-data.ts`. El esquema de Supabase equivalente
+está en `supabase/migrations/00001_schema.sql`. Carrito, favoritos, sesión y
+pedidos se guardan en `localStorage` mientras Supabase no esté conectado.
+
+Para conectar Supabase: copiar `.env.example` a `.env.local`, completar las
+claves y reemplazar los imports de `demo-data` por consultas.
+
+## Comandos
+
+```bash
+npm run dev     # desarrollo
+npm run build   # build de producción
+npm run start   # servir el build
+npm run lint    # ESLint (debe salir sin errores ni advertencias)
+```

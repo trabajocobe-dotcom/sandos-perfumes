@@ -1,8 +1,9 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback, useEffect } from 'react'
+import { createContext, useContext, useMemo, useState } from 'react'
+import { useIsHydrated } from '@/hooks/useClientValue'
+import * as auth from '@/lib/local-auth'
 import type { AuthUser, UserRole } from '@/lib/auth-types'
-import * as auth from '@/lib/supabase-auth'
 
 interface AuthContextValue {
   user: AuthUser | null
@@ -20,87 +21,55 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null)
-  const [loading, setLoading] = useState(true)
+  const hydrated = useIsHydrated()
+  // La sesión vive en localStorage: solo se puede leer una vez hidratados.
+  const [session, setSession] = useState<AuthUser | null>(null)
+  const user = hydrated ? (session ?? auth.getSession()) : null
 
-  useEffect(() => {
-    auth.getSession().then((u) => {
-      setUser(u)
-      setLoading(false)
-    })
-  }, [])
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      user,
+      loading: !hydrated,
+      isAuthenticated: Boolean(user),
 
-  const login = useCallback(async (email: string, password: string) => {
-    const u = await auth.login(email, password)
-    if (u) setUser(u)
-    return !!u
-  }, [])
+      login: async (email, password) => {
+        const found = auth.login(email, password)
+        if (found) setSession(found)
+        return Boolean(found)
+      },
 
-  const logout = useCallback(async () => {
-    await auth.logout()
-    setUser(null)
-  }, [])
+      logout: async () => {
+        auth.logout()
+        setSession(null)
+      },
 
-  const hasRole = useCallback(
-    (...roles: UserRole[]) => {
-      if (!user) return false
-      return roles.includes(user.role)
-    },
-    [user]
+      hasRole: (...roles) => (user ? roles.includes(user.role) : false),
+
+      createUser: async (email, name, password, role) => {
+        if (!user) throw new Error('No autenticado')
+        return auth.createUser(user, email, name, password, role)
+      },
+
+      getUsers: async () => (user ? auth.getUsersList() : []),
+
+      updateRole: async (userId, newRole) => {
+        if (!user) throw new Error('No autenticado')
+        auth.updateUserRole(user, userId, newRole)
+      },
+
+      deleteUser: async (userId) => {
+        if (!user) throw new Error('No autenticado')
+        auth.deleteUser(user, userId)
+      },
+    }),
+    [user, hydrated]
   )
 
-  const createUser = useCallback(
-    async (email: string, name: string, password: string, role: UserRole) => {
-      if (!user) throw new Error('No autenticado')
-      const newUser = await auth.createUser(user, email, name, password, role)
-      return newUser
-    },
-    [user]
-  )
-
-  const getUsers = useCallback(async () => {
-    if (!user) return []
-    return auth.getUsersList()
-  }, [user])
-
-  const updateRole = useCallback(
-    async (userId: string, newRole: UserRole) => {
-      if (!user) throw new Error('No autenticado')
-      await auth.updateUserRole(user, userId, newRole)
-    },
-    [user]
-  )
-
-  const deleteUser = useCallback(
-    async (userId: string) => {
-      if (!user) throw new Error('No autenticado')
-      await auth.deleteUser(user, userId)
-    },
-    [user]
-  )
-
-  return (
-    <AuthContext.Provider
-      value={{
-        user,
-        loading,
-        login,
-        logout,
-        isAuthenticated: !!user,
-        hasRole,
-        createUser,
-        getUsers,
-        updateRole,
-        deleteUser,
-      }}
-    >
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
   const ctx = useContext(AuthContext)
-  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
+  if (!ctx) throw new Error('useAuth debe usarse dentro de AuthProvider')
   return ctx
 }

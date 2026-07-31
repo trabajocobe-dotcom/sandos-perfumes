@@ -1,45 +1,55 @@
 import { forwardRef } from 'react'
+import Link from 'next/link'
+import { cn } from '@/lib/utils'
 
 const variants = {
-  primary:
-    'bg-charcoal text-cream border border-cream/10 hover:bg-charcoal/80 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
-  secondary:
-    'bg-gradient-to-r from-gold to-gold-dark text-charcoal font-semibold hover:from-gold-dark hover:to-gold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold glow-gold-sm',
-  outline:
-    'border border-gold/30 text-gold-light hover:bg-gold/10 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
-  ghost:
-    'text-cream/60 hover:text-cream hover:bg-cream/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold',
-}
+  /** El oro es el único color de acción del sistema. */
+  primary: 'btn-primary',
+  outline: 'btn-outline',
+  quiet: 'btn-quiet',
+} as const
 
 const sizes = {
-  sm: 'px-3 py-1.5 text-sm',
-  md: 'px-5 py-2.5 text-sm',
-  lg: 'px-7 py-3 text-base',
+  sm: 'btn-sm',
+  md: '',
+  lg: 'btn-lg',
+} as const
+
+type Variant = keyof typeof variants
+type Size = keyof typeof sizes
+
+interface BaseProps {
+  variant?: Variant
+  size?: Size
+  className?: string
+  children?: React.ReactNode
 }
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: keyof typeof variants
-  size?: keyof typeof sizes
-}
+type ButtonProps = BaseProps & React.ButtonHTMLAttributes<HTMLButtonElement>
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = 'primary', size = 'md', className = '', ...props }, ref) => {
-    return (
-      <button
-        ref={ref}
-        className={`
-          inline-flex items-center justify-center gap-2 rounded-lg font-medium
-          transition-all duration-200
-          disabled:opacity-40 disabled:pointer-events-none
-          cursor-pointer
-          ${variants[variant]}
-          ${sizes[size]}
-          ${className}
-        `}
-        {...props}
-      />
-    )
-  }
+  ({ variant = 'primary', size = 'md', className, type = 'button', ...props }, ref) => (
+    <button
+      ref={ref}
+      type={type}
+      className={cn('btn', variants[variant], sizes[size], className)}
+      {...props}
+    />
+  )
 )
-
 Button.displayName = 'Button'
+
+type ButtonLinkProps = BaseProps &
+  Omit<React.ComponentProps<typeof Link>, 'className'>
+
+/** Mismo lenguaje visual que Button, pero navega. Nunca un <button> con onClick=router.push. */
+export function ButtonLink({
+  variant = 'primary',
+  size = 'md',
+  className,
+  ...props
+}: ButtonLinkProps) {
+  return (
+    <Link className={cn('btn', variants[variant], sizes[size], className)} {...props} />
+  )
+}

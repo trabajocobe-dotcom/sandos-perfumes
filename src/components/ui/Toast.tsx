@@ -1,11 +1,12 @@
 'use client'
 
-import { createContext, useContext, useState, useCallback } from 'react'
-import { CheckCircle, XCircle, X } from 'lucide-react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { Check, TriangleAlert, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 type ToastType = 'success' | 'error'
 
-interface Toast {
+interface ToastItem {
   id: number
   message: string
   type: ToastType
@@ -19,37 +20,61 @@ const ToastContext = createContext<ToastContextValue | null>(null)
 
 export function useToast() {
   const ctx = useContext(ToastContext)
-  if (!ctx) throw new Error('useToast must be used within ToastProvider')
+  if (!ctx) throw new Error('useToast debe usarse dentro de ToastProvider')
   return ctx
 }
 
-export function ToastProvider({ children }: { children: React.ReactNode }) {
-  const [toasts, setToasts] = useState<Toast[]>([])
+let nextId = 0
 
-  const toast = useCallback((message: string, type: ToastType = 'success') => {
-    const id = Date.now()
-    setToasts((prev) => [...prev, { id, message, type }])
-    setTimeout(() => {
-      setToasts((prev) => prev.filter((t) => t.id !== id))
-    }, 3000)
+export function ToastProvider({ children }: { children: React.ReactNode }) {
+  const [toasts, setToasts] = useState<ToastItem[]>([])
+
+  const dismiss = useCallback((id: number) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id))
   }, [])
 
+  const toast = useCallback(
+    (message: string, type: ToastType = 'success') => {
+      const id = nextId++
+      setToasts((prev) => [...prev.slice(-2), { id, message, type }])
+      window.setTimeout(() => dismiss(id), 3600)
+    },
+    [dismiss]
+  )
+
+  const value = useMemo(() => ({ toast }), [toast])
+
   return (
-    <ToastContext.Provider value={{ toast }}>
+    <ToastContext.Provider value={value}>
       {children}
-      <div className="fixed bottom-6 right-6 z-[999] flex flex-col gap-2">
+
+      {/* aria-live: el lector de pantalla anuncia el aviso sin robar el foco */}
+      <div
+        className="pointer-events-none fixed inset-x-4 bottom-4 z-[90] flex flex-col items-center gap-2 sm:bottom-6 sm:left-auto sm:right-6 sm:items-end"
+        role="status"
+        aria-live="polite"
+      >
         {toasts.map((t) => (
           <div
             key={t.id}
-            className={`flex items-center gap-3 rounded-xl px-4 py-3 text-sm shadow-xl backdrop-blur-md animate-fade-in-up ${
-              t.type === 'success'
-                ? 'bg-emerald-900/90 text-emerald-200 border border-emerald-700/30'
-                : 'bg-red-900/90 text-red-200 border border-red-700/30'
-            }`}
+            className={cn(
+              'animate-rise pointer-events-auto flex items-center gap-3 rounded-brand border px-4 py-3',
+              'bg-ink-raised text-[14px] shadow-[0_16px_40px_rgba(0,0,0,0.5)]',
+              t.type === 'success' ? 'border-gilt/35' : 'border-rust/50'
+            )}
           >
-            {t.type === 'success' ? <CheckCircle className="size-4 shrink-0" /> : <XCircle className="size-4 shrink-0" />}
-            <span>{t.message}</span>
-            <button onClick={() => setToasts((prev) => prev.filter((x) => x.id !== t.id))} className="ml-2 opacity-60 hover:opacity-100 cursor-pointer">
+            {t.type === 'success' ? (
+              <Check className="size-4 shrink-0 text-gilt" strokeWidth={2} />
+            ) : (
+              <TriangleAlert className="size-4 shrink-0 text-rust" strokeWidth={2} />
+            )}
+            <span className="text-bone">{t.message}</span>
+            <button
+              type="button"
+              onClick={() => dismiss(t.id)}
+              className="ml-1 text-bone-3 transition-colors hover:text-bone"
+              aria-label="Cerrar aviso"
+            >
               <X className="size-3.5" />
             </button>
           </div>

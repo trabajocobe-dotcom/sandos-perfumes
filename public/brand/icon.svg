@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="55 15 90 185" width="90" height="185">
+  <defs>
+    <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4BA6A;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#C9A84C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#A88A3A;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(55, 15)">
+    <rect x="37" y="0" width="26" height="8" rx="2" fill="url(#goldGradient)"/>
+    <rect x="43" y="8" width="14" height="12" rx="1" fill="url(#goldGradient)"/>
+    <rect x="45" y="20" width="10" height="16" fill="url(#goldGradient)"/>
+    <path d="M30 36 L25 155 Q25 170 40 170 L60 170 Q75 170 75 155 L70 36 Z" 
+          fill="none" stroke="url(#goldGradient)" stroke-width="3" stroke-linejoin="round"/>
+    <line x1="30" y1="55" x2="70" y2="55" stroke="#C9A84C" stroke-width="1.5" opacity="0.6"/>
+    <rect x="35" y="80" width="30" height="40" rx="2" fill="none" stroke="#C9A84C" stroke-width="1" opacity="0.4"/>
+  </g>
+
+  <text x="100" y="195" 
+        font-family="'Playfair Display', 'Georgia', serif" 
+        font-size="18" font-weight="700" letter-spacing="6" text-anchor="middle" fill="#FAF8F5">S</text>
+</svg>

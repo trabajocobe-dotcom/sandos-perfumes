@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 460" width="420" height="460" role="img" aria-label="Sandós Perfumes">
+  <title>Sandós Perfumes</title>
+
+  <!-- Versión en archivo del lockup, para metadatos, Open Graph y favicon.
+       En la interfaz se usa el componente <Logo />, que aplica la Bodoni real. -->
+
+  <g transform="translate(158 20)" fill="none" stroke="#f2ede6" stroke-width="4" stroke-linejoin="round">
+    <path d="M36 3h32l6 6v10l-6 6H36l-6-6V9z"/>
+    <path d="M24 37h56l12 12v66l-12 12H24L12 115V49z"/>
+    <path d="M33 46h38l10 10v52l-10 10H33l-10-10V56z"/>
+  </g>
+  <rect x="199" y="47" width="22" height="8" fill="#c8a24a"/>
+
+  <text x="210" y="134" text-anchor="middle" fill="#c8a24a"
+        font-family="Bodoni Moda, Didot, Georgia, serif" font-size="52">
+    <tspan x="196">S</tspan><tspan x="222">P</tspan>
+  </text>
+
+  <text x="210" y="256" text-anchor="middle" fill="#f2ede6"
+        font-family="Bodoni Moda, Didot, Georgia, serif" font-size="56" letter-spacing="11">
+    SANDÓS
+  </text>
+
+  <g stroke="#c8a24a" stroke-width="1.5">
+    <line x1="60" y1="292" x2="150" y2="292"/>
+    <line x1="270" y1="292" x2="360" y2="292"/>
+  </g>
+  <text x="210" y="298" text-anchor="middle" fill="#c8a24a"
+        font-family="Inter, Helvetica, Arial, sans-serif" font-size="20" letter-spacing="9">
+    PERFUMES
+  </text>
+
+  <text x="210" y="340" text-anchor="middle" fill="#b4ada5"
+        font-family="Inter, Helvetica, Arial, sans-serif" font-size="13" letter-spacing="6">
+    FRAGANCIAS QUE DEJAN HUELLA
+  </text>
+
+  <path d="M210 366l6 16 16 6-16 6-6 16-6-16-16-6 16-6z" fill="#c8a24a"/>
+</svg>

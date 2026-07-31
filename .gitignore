@@ -2,6 +2,9 @@
 
 # dependencies
 /node_modules
+# También las de las herramientas auxiliares: el generador de imágenes traía
+# 4.288 archivos de node_modules al repositorio del sitio.
+**/node_modules/
 /.pnp
 .pnp.*
 .yarn/*
@@ -45,3 +48,16 @@ next-env.d.ts
 
 # supabase temp files
 supabase/.temp/
+
+# Perfil de Chrome del generador de imágenes.
+# Son decenas de miles de archivos con cookies y sesiones guardadas: no deben
+# viajar al repositorio, y además hacen lentísimo cualquier comando de git.
+tools/**/chrome-session/
+tools/**/debug-profile/
+# Capturas de depuración e imágenes generadas: son salidas, no fuente.
+tools/**/debug_*.png
+tools/**/output/
+
+# logs del servidor local
+server.log
+server-error.log

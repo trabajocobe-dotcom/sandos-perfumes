@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Shield, Plus, Trash2, ChevronDown } from 'lucide-react'
+import { Shield, Plus, Trash2 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -11,17 +11,7 @@ import { Select } from '@/components/ui/Select'
 import { useAuth } from '@/hooks/useAuth'
 import type { UserRole, AuthUser } from '@/lib/auth-types'
 
-const roleLabels: Record<UserRole, string> = {
-  'super-admin': 'Super Admin',
-  admin: 'Admin',
-  viewer: 'Visor',
-}
 
-const roleBadge: Record<UserRole, 'gold' | 'default' | 'warning'> = {
-  'super-admin': 'gold',
-  admin: 'default',
-  viewer: 'warning',
-}
 
 const roleOptions = [
   { value: 'admin', label: 'Admin — gestiona productos, pedidos, inventario' },
@@ -41,7 +31,16 @@ export default function UsersPage() {
 
   const refresh = async () => setUsers(await getUsers())
 
-  useEffect(() => { refresh() }, [getUsers])
+  // El listado vive en localStorage: se puede leer recién una vez montado.
+  useEffect(() => {
+    let active = true
+    getUsers().then((list) => {
+      if (active) setUsers(list)
+    })
+    return () => {
+      active = false
+    }
+  }, [getUsers])
 
   const handleCreate = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -83,8 +82,8 @@ export default function UsersPage() {
   if (user?.role !== 'super-admin') {
     return (
       <div className="py-16 text-center">
-        <Shield className="mx-auto size-8 text-warm-gray-light" />
-        <p className="mt-3 text-sm text-warm-gray">
+        <Shield className="mx-auto size-8 text-bone-3" />
+        <p className="mt-3 text-sm text-bone-2">
           Solo un Super Admin puede gestionar usuarios.
         </p>
       </div>
@@ -95,10 +94,10 @@ export default function UsersPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-charcoal">Usuarios</h2>
-          <p className="text-sm text-warm-gray">{users.length} usuarios registrados</p>
+          <h2 className="text-lg font-semibold text-bone">Usuarios</h2>
+          <p className="text-sm text-bone-2">{users.length} usuarios registrados</p>
         </div>
-        <Button variant="secondary" onClick={() => setShowModal(true)}>
+        <Button variant="primary" onClick={() => setShowModal(true)}>
           <Plus className="size-4" /> Nuevo usuario
         </Button>
       </div>
@@ -111,7 +110,7 @@ export default function UsersPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-charcoal/10 text-left text-xs font-medium text-warm-gray-light uppercase">
+              <tr className="border-b border-ink-line text-left text-xs font-medium text-bone-3 uppercase">
                 <th className="p-4">Usuario</th>
                 <th className="p-4">Email</th>
                 <th className="p-4">Rol</th>
@@ -121,31 +120,31 @@ export default function UsersPage() {
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.id} className="border-b border-charcoal/5 hover:bg-ivory/50 transition-colors">
-                  <td className="p-4 font-medium text-charcoal">{u.name}</td>
-                  <td className="p-4 text-warm-gray">{u.email}</td>
+                <tr key={u.id} className="border-b border-ink-line hover:bg-ink-sunken/50 transition-colors">
+                  <td className="p-4 font-medium text-bone">{u.name}</td>
+                  <td className="p-4 text-bone-2">{u.email}</td>
                   <td className="p-4">
                     {u.role === 'super-admin' ? (
-                      <Badge variant="gold">Super Admin</Badge>
+                      <Badge variant="gilt">Super Admin</Badge>
                     ) : (
                       <select
                         value={u.role}
                         onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                        className="rounded-lg border border-charcoal/15 bg-white px-2 py-1 text-xs text-charcoal focus:border-gold focus:ring-1 focus:ring-gold/20 focus:outline-none cursor-pointer"
+                        className="rounded-lg border border-ink-line bg-ink-raised px-2 py-1 text-xs text-bone focus:border-gilt focus:ring-1 focus:ring-gilt/20 focus:outline-none cursor-pointer"
                       >
                         <option value="admin">Admin</option>
                         <option value="viewer">Visor</option>
                       </select>
                     )}
                   </td>
-                  <td className="p-4 text-warm-gray text-xs">
-                    {new Date(u.createdAt).toLocaleDateString('es-AR')}
+                  <td className="p-4 text-bone-2 text-xs">
+                    {new Date(u.createdAt).toLocaleDateString('es-CO')}
                   </td>
                   <td className="p-4">
                     {u.role !== 'super-admin' && (
                       <button
                         onClick={() => handleDelete(u.id)}
-                        className="p-1.5 text-warm-gray-light hover:text-red-500 transition-colors cursor-pointer"
+                        className="p-1.5 text-bone-3 hover:text-red-500 transition-colors cursor-pointer"
                       >
                         <Trash2 className="size-4" />
                       </button>

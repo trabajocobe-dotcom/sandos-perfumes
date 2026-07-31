@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 280" fill="none">
+  <!-- Perfume bottle shape -->
+  <rect x="55" y="10" width="90" height="20" rx="4" stroke="#C9A84C" stroke-width="3" fill="none"/>
+  <rect x="65" y="30" width="70" height="10" rx="2" fill="#C9A84C"/>
+  
+  <!-- Bottle body -->
+  <path d="M50 45 L50 40 Q50 35 55 35 L145 35 Q150 35 150 40 L150 45 Q165 50 165 70 L165 180 Q165 200 145 200 L55 200 Q35 200 35 180 L35 70 Q35 50 50 45Z" stroke="#1a1a1a" stroke-width="4" fill="none"/>
+  
+  <!-- Inner border -->
+  <path d="M58 52 L58 48 Q58 44 62 44 L138 44 Q142 44 142 48 L142 52 Q152 56 152 72 L152 176 Q152 192 138 192 L62 192 Q48 192 48 176 L48 72 Q48 56 58 52Z" stroke="#1a1a1a" stroke-width="2" fill="none"/>
+  
+  <!-- S and P monogram -->
+  <text x="100" y="140" text-anchor="middle" font-family="Georgia, serif" font-size="60" font-weight="bold" fill="#C9A84C">SP</text>
+  
+  <!-- Decorative lines -->
+  <line x1="30" y1="215" x2="80" y2="215" stroke="#C9A84C" stroke-width="1.5"/>
+  <line x1="120" y1="215" x2="170" y2="215" stroke="#C9A84C" stroke-width="1.5"/>
+  
+  <!-- Star/diamond -->
+  <path d="M100 210 L103 215 L100 220 L97 215Z" fill="#C9A84C"/>
+  
+  <!-- SANDÓS text -->
+  <text x="100" y="248" text-anchor="middle" font-family="Georgia, serif" font-size="32" font-weight="bold" fill="#1a1a1a" letter-spacing="8">SANDÓS</text>
+  
+  <!-- PERFUMES text -->
+  <text x="100" y="268" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#C9A84C" letter-spacing="12">PERFUMES</text>
+  
+  <!-- Tagline -->
+  <text x="100" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" fill="#888" letter-spacing="3">FRAGANCIAS QUE DEJAN HUELLA</text>
+</svg>

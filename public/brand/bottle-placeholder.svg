@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Frasco de perfume">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#1b1917"/>
+      <stop offset="100%" stop-color="#0a0908"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c8a24a" stop-opacity=".26"/>
+      <stop offset="55%" stop-color="#c8a24a" stop-opacity=".08"/>
+      <stop offset="100%" stop-color="#c8a24a" stop-opacity=".18"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#g)"/>
+  <ellipse cx="200" cy="230" rx="120" ry="110" fill="#c8a24a" opacity=".05"/>
+  <rect x="185" y="92" width="30" height="34" rx="2" fill="#c8a24a" opacity=".35"/>
+  <rect x="176" y="124" width="48" height="20" rx="2" fill="#c8a24a" opacity=".22"/>
+  <path d="M148 148h104a14 14 0 0 1 14 14v128a18 18 0 0 1-18 18H152a18 18 0 0 1-18-18V162a14 14 0 0 1 14-14z" fill="url(#glass)" stroke="#c8a24a" stroke-opacity=".38" stroke-width="1.5"/>
+  <path d="M164 176v112" stroke="#f2ede6" stroke-opacity=".10" stroke-width="8" stroke-linecap="round"/>
+</svg>
