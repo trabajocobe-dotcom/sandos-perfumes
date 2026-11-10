@@ -79,9 +79,7 @@ export function Header() {
 
   const iconButton = cn(
     'relative grid size-10 place-items-center rounded-pill transition-colors',
-    transparent
-      ? 'text-white hover:bg-white/20'
-      : 'text-bone-2 hover:bg-ink-sunken hover:text-bone'
+    'text-bone-2 hover:bg-ink-sunken hover:text-bone'
   )
 
   return (
@@ -113,8 +111,7 @@ export function Header() {
             <Link
               href="/"
               className={cn(
-                'mr-auto transition-opacity hover:opacity-80',
-                transparent && 'text-white'
+                'mr-auto transition-opacity hover:opacity-80'
               )}
               aria-label="Sandós Perfumes, ir al inicio"
             >
@@ -122,7 +119,7 @@ export function Header() {
             </Link>
 
             <nav
-              className={cn('nav-links hidden lg:flex', transparent && 'on-photo')}
+              className="nav-links hidden lg:flex"
               aria-label="Navegación principal"
             >
               {NAV.map((link) => (

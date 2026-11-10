@@ -408,11 +408,6 @@
   .nav-links a:hover { color: var(--color-bone); }
   .nav-links a:hover::after { transform: scaleX(1); }
 
-  /* Sobre la foto del hero el header es transparente: ahí los enlaces se
-     escriben en blanco PURO. Con un 88 % de opacidad el texto compuesto contra
-     el punto más claro del oro caía a 4,02:1; opaco sube a 4,65:1 y pasa AA.
-     El hover no cambia el color —ya no hay margen— sino que dibuja la línea. */
-  .nav-links.on-photo a { color: #fff; }
 
   /* ---- Barra de compra fija (teléfono) ---- */
   .barra-compra {
@@ -1365,5 +1360,139 @@ body:has(.velo-carga:not(.velo-oculto)) { overflow: hidden; }
     .piramide-capa,
     .piramide-nota { opacity: 1; transform: none; transition: none; }
     .piramide-tiempo-tramo { transform: scaleX(1); transition: none; }
+  }
+}
+
+@layer components {
+  /* ---- Héroe editorial: la palabra por detrás, la foto encima ---- */
+  .hero-aroma {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: var(--color-ink);
+    padding-block: clamp(7rem, 13vw, 11rem) clamp(2.5rem, 5vw, 4.5rem);
+  }
+  /* Única herencia del baño de oro anterior: una luz ámbar arriba a la
+     derecha, que da calor sin teñir el texto. */
+  .hero-luz {
+    position: absolute;
+    top: -22%;
+    right: -12%;
+    width: min(60rem, 85vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--color-amber-light) 38%, transparent) 0%,
+      color-mix(in srgb, var(--color-amber-light) 12%, transparent) 42%,
+      transparent 68%
+    );
+    pointer-events: none;
+    z-index: -2;
+  }
+
+  .hero-palabra {
+    position: absolute;
+    left: 50%;
+    top: 46%;
+    z-index: -1;
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(7rem, 23vw, 22rem);
+    line-height: 0.8;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    /* Muy tenue: tiene que leerse como textura, no competir con el titular */
+    color: color-mix(in srgb, var(--color-gilt-soft) 22%, transparent);
+    /* Se queda ATRÁS: el desvío SUMA, así la palabra baja mientras la página
+       sube y recorre menos camino. Con el signo al revés corría más que la
+       página y parecía que flotaba hacia adelante. */
+    translate: -50% calc(-50% + var(--desvio, 0px));
+    animation: palabra-entra 1100ms var(--ease-editorial) both;
+  }
+  @keyframes palabra-entra {
+    from { opacity: 0; scale: 1.06; }
+    to { opacity: 1; scale: 1; }
+  }
+
+  .hero-rejilla {
+    position: relative;
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4rem);
+    align-items: center;
+  }
+  @media (width >= 64rem) {
+    .hero-rejilla { grid-template-columns: 1fr 0.86fr; gap: 4.5rem; }
+    /* En dos columnas la palabra se corre al eje de la FOTO y además se apaga
+       hacia la izquierda. A 331 px de cuerpo siempre iba a cruzar el titular;
+       achicarla habría matado el gesto, así que llega tenue y desaparece
+       antes de llegar al texto. */
+    .hero-palabra {
+      left: 66%;
+      mask-image: linear-gradient(to right, transparent 2%, #000 30%);
+    }
+  }
+
+  .hero-texto { max-width: 36rem; }
+
+  .hero-foto { position: relative; margin: 0; justify-self: center; width: 100%; }
+  @media (width >= 64rem) {
+    .hero-foto { justify-self: end; max-width: 27rem; }
+  }
+  .hero-foto-marco {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: var(--radius-brand);
+    box-shadow: var(--shadow-warm);
+    animation: foto-entra 1000ms var(--ease-editorial) both;
+    animation-delay: 160ms;
+  }
+  @keyframes foto-entra {
+    from { opacity: 0; transform: translateY(2rem) scale(0.97); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* Fichas técnicas sueltas, como las notas al margen de la referencia */
+  .hero-etiquetas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .hero-etiqueta {
+    position: absolute;
+    padding: 0.4375rem 0.875rem;
+    border-radius: var(--radius-pill);
+    background-color: rgb(255 255 255 / 0.92);
+    backdrop-filter: blur(8px);
+    box-shadow: var(--shadow-warm-sm);
+    font-size: 0.8125rem;
+    color: var(--color-bone-2);
+    white-space: nowrap;
+    animation: etiqueta-entra 700ms var(--ease-editorial) both;
+    animation-delay: 620ms;
+  }
+  .hero-etiqueta:nth-child(1) { top: 11%; left: -1.25rem; }
+  .hero-etiqueta:nth-child(2) { top: 47%; right: -1.75rem; }
+  .hero-etiqueta:nth-child(3) { bottom: 9%; left: 1.5rem; }
+  @keyframes etiqueta-entra {
+    from { opacity: 0; transform: translateY(0.5rem) scale(0.96); }
+    to { opacity: 1; transform: none; }
+  }
+  /* En pantallas angostas las fichas se salen del marco: se guardan */
+  @media (width < 48rem) {
+    .hero-etiquetas { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-palabra,
+    .hero-foto-marco,
+    .hero-etiqueta { animation: none; }
+    .hero-palabra { translate: -50% -50%; }
   }
 }

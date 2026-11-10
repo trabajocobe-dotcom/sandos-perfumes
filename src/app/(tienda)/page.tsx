@@ -4,7 +4,7 @@ import { NewsletterForm } from '@/components/commerce/NewsletterForm'
 import { CollectionRail } from '@/components/home/CollectionRail'
 import { ComoNaceUnAroma } from '@/components/home/ComoNaceUnAroma'
 import { FranjaIngredientes } from '@/components/home/FranjaIngredientes'
-import { HeroSlider, type Slide } from '@/components/home/HeroSlider'
+import { HeroAroma, type Slide } from '@/components/home/HeroAroma'
 import { PiramideViva } from '@/components/home/PiramideViva'
 import { ProductImage } from '@/components/ui/ProductImage'
 import { Reveal, RevealItem } from '@/components/ui/Reveal'
@@ -22,6 +22,8 @@ const SLIDES: Slide[] = [
     image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=1800&q=80',
     ctaLabel: 'Ver el catálogo',
     ctaHref: '/catalogo',
+    palabra: 'AROMA',
+    etiquetas: ['18 fragancias', 'Pirámide completa', 'Duración medida'],
   },
   {
     overline: 'Set de descubrimiento',
@@ -31,6 +33,8 @@ const SLIDES: Slide[] = [
     image: 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=1800&q=80',
     ctaLabel: 'Armar mi set',
     ctaHref: '/muestras',
+    palabra: 'MUESTRA',
+    etiquetas: ['5 muestras', '2 ml cada una', 'Se te descuenta'],
   },
   {
     overline: 'Un minuto, cinco preguntas',
@@ -40,6 +44,8 @@ const SLIDES: Slide[] = [
     image: 'https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=1800&q=80',
     ctaLabel: 'Empezar el test',
     ctaHref: '/quiz',
+    palabra: 'FIRMA',
+    etiquetas: ['5 preguntas', '1 minuto', '3 resultados'],
   },
   {
     overline: 'Garantía de autenticidad',
@@ -49,6 +55,8 @@ const SLIDES: Slide[] = [
     image: 'https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=1800&q=80',
     ctaLabel: 'Cómo lo verificamos',
     ctaHref: '/legal/autenticidad',
+    palabra: 'ORIGEN',
+    etiquetas: ['Código de lote', 'Factura', 'Cambios 30 días'],
   },
 ]
 
@@ -103,7 +111,7 @@ export default function HomePage() {
 
   return (
     <>
-      <HeroSlider slides={SLIDES} />
+      <HeroAroma slides={SLIDES} />
 
       {/* ── Franja de materias primas ────────────────────────────────────── */}
       {/* Va pegada al héroe a propósito: es el primer corte y dice de qué va
