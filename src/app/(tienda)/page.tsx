@@ -2,7 +2,10 @@ import Link from 'next/link'
 import { ArrowRight, BadgeCheck, Droplets, RotateCcw, Truck } from 'lucide-react'
 import { NewsletterForm } from '@/components/commerce/NewsletterForm'
 import { CollectionRail } from '@/components/home/CollectionRail'
+import { ComoNaceUnAroma } from '@/components/home/ComoNaceUnAroma'
+import { FranjaIngredientes } from '@/components/home/FranjaIngredientes'
 import { HeroSlider, type Slide } from '@/components/home/HeroSlider'
+import { PiramideViva } from '@/components/home/PiramideViva'
 import { ProductImage } from '@/components/ui/ProductImage'
 import { Reveal, RevealItem } from '@/components/ui/Reveal'
 import { recentPosts } from '@/lib/blog'
@@ -102,6 +105,11 @@ export default function HomePage() {
     <>
       <HeroSlider slides={SLIDES} />
 
+      {/* ── Franja de materias primas ────────────────────────────────────── */}
+      {/* Va pegada al héroe a propósito: es el primer corte y dice de qué va
+          el sitio antes de pedirle nada a nadie. */}
+      <FranjaIngredientes />
+
       {/* ── Esencia del lujo ─────────────────────────────────────────────── */}
       {/* Sin Reveal en el envoltorio: sus hijos ya entran por separado y animar
           las dos capas hacía que el bloque se moviera dos veces. */}
@@ -179,6 +187,12 @@ export default function HomePage() {
           <CollectionRail products={collection} />
         </div>
       </Reveal>
+
+      {/* ── Cómo nace un aroma ───────────────────────────────────────────── */}
+      <ComoNaceUnAroma />
+
+      {/* ── Pirámide olfativa ────────────────────────────────────────────── */}
+      <PiramideViva />
 
       {/* ── Bloque editorial: las muestras ───────────────────────────────── */}
       <Reveal as="section" className="shell pb-[var(--spacing-section)]">
