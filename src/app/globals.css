@@ -72,6 +72,8 @@
   --font-display: var(--font-bodoni), "Bodoni Moda", "Didot", Georgia, serif;
   --font-brand: var(--font-bodoni), "Bodoni Moda", "Didot", Georgia, serif;
   --font-sans: var(--font-jost), "Jost", system-ui, sans-serif;
+  /* Manuscrita: SOLO para las notas al margen del héroe */
+  --font-nota: var(--font-caveat), "Caveat", cursive;
 
   /* — Escala tipográfica ----------------------------------------------------
        El display crece respecto de la dirección anterior porque la Bodoni pide
@@ -1494,5 +1496,274 @@ body:has(.velo-carga:not(.velo-oculto)) { overflow: hidden; }
     .hero-foto-marco,
     .hero-etiqueta { animation: none; }
     .hero-palabra { translate: -50% -50%; }
+  }
+}
+
+@layer components {
+  /* ═══ Héroe con arco de frascos ═══════════════════════════════════════════
+     Estructura de la referencia: columna centrada arriba, fila curva abajo.
+
+     La clave es `--u`: la referencia no mide en píxeles sino en unidades de
+     marco, min(100vw/1440, 100vh/1080). Todo se multiplica por esa unidad, así
+     el conjunto entra entero en cualquier pantalla sin perder proporciones.
+     Medir en píxeles era lo que dejaba la fila corta y el recorte cortado. */
+
+  .heroarco {
+    --u: min(100vw / 1440, 100vh / 1080);
+    position: relative;
+    overflow: hidden;
+    background-color: var(--color-ink);
+    height: calc(1080 * var(--u));
+    min-height: 34rem;
+  }
+
+  .heroarco-centro {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(96 * var(--u));
+    width: min(calc(1000 * var(--u)), calc(100% - 2.5rem));
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  /* ---- Insignia ---- */
+  .heroarco-insignia {
+    display: inline-block;
+    padding: calc(9 * var(--u)) calc(20 * var(--u));
+    border-radius: var(--radius-pill);
+    background-color: var(--color-ink-sunken);
+    color: var(--color-gilt);
+    font-size: max(0.8125rem, calc(16.6 * var(--u)));
+    font-weight: 500;
+    animation: ha-insignia 620ms var(--ease-editorial) both;
+    animation-delay: 120ms;
+  }
+  @keyframes ha-insignia {
+    from { opacity: 0; transform: scale(0.88); }
+    to { opacity: 1; transform: none; }
+  }
+
+  /* ---- Titular ----
+     La referencia usa una grotesca muy pesada y muy apretada. Acá es Jost 700,
+     que ya está en el sitio: Bodoni se queda para el logotipo. */
+  .heroarco-titular {
+    margin-top: calc(26 * var(--u));
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: max(2.1rem, calc(84 * var(--u)));
+    line-height: 1.045;
+    letter-spacing: -0.035em;
+    color: #101410;
+  }
+  .heroarco-titular br { display: none; }
+  @media (width >= 48rem) {
+    .heroarco-titular br { display: inline; }
+  }
+
+  .heroarco-bajada {
+    margin-top: calc(28 * var(--u));
+    font-size: max(0.95rem, calc(20.8 * var(--u)));
+    line-height: 1.55;
+    color: var(--color-bone-2);
+  }
+  .heroarco-bajada br { display: none; }
+  @media (width >= 64rem) {
+    .heroarco-bajada br { display: inline; }
+  }
+
+  /* El titular y la bajada suben saliendo de un desenfoque */
+  .heroarco-titular,
+  .heroarco-bajada {
+    animation: ha-sube 820ms var(--ease-editorial) both;
+  }
+  .heroarco-titular { animation-delay: 220ms; }
+  .heroarco-bajada { animation-delay: 380ms; }
+  @keyframes ha-sube {
+    from { opacity: 0; transform: translateY(1.25rem); filter: blur(7px); }
+    to { opacity: 1; transform: none; filter: blur(0); }
+  }
+
+  /* ---- Botón dentro de su anillo punteado ---- */
+  .heroarco-anillo {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    margin-top: calc(40 * var(--u));
+    padding: calc(8 * var(--u));
+    border: 1px dashed color-mix(in srgb, var(--color-gilt) 45%, transparent);
+    border-radius: var(--radius-pill);
+    animation: ha-boton 620ms var(--ease-editorial) both;
+    animation-delay: 540ms;
+  }
+  @keyframes ha-boton {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: none; }
+  }
+  .heroarco-boton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: calc(17 * var(--u)) calc(34 * var(--u));
+    border-radius: var(--radius-pill);
+    background-color: var(--color-bone);
+    color: #fff;
+    font-size: max(0.875rem, calc(16.6 * var(--u)));
+    font-weight: 500;
+    white-space: nowrap;
+    transition: background-color var(--duration-fast) var(--ease-editorial),
+                transform var(--duration-fast) var(--ease-editorial);
+  }
+  .heroarco-boton:hover { background-color: var(--color-gilt-deep); }
+  .heroarco-boton:active { transform: scale(0.97); }
+
+  /* ---- Notas a mano ----
+     Posicionadas contra el MARCO, no contra el texto: así no chocan con el
+     titular por más que el español sea más largo que el inglés. */
+  .heroarco-nota {
+    position: absolute;
+    font-family: var(--font-nota);
+    font-weight: 600;
+    font-size: calc(27 * var(--u));
+    line-height: 1.12;
+    color: var(--color-gilt);
+    pointer-events: none;
+    animation: ha-nota 700ms var(--ease-editorial) both;
+    animation-delay: 860ms;
+  }
+  @keyframes ha-nota {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .heroarco-nota-arriba {
+    top: calc(300 * var(--u));
+    left: calc(1148 * var(--u));
+    width: calc(230 * var(--u));
+    rotate: 16deg;
+    text-align: left;
+  }
+  /* Cuelga del bloque del botón, no de una coordenada del marco: el titular en
+     español es más corto que el inglés y con una coordenada fija la nota
+     terminaba debajo de las tarjetas, señalando al aire. */
+  .heroarco-nota-abajo {
+    top: calc(100% + 14 * var(--u));
+    right: calc(100% + 24 * var(--u));
+    rotate: -14deg;
+    white-space: nowrap;
+  }
+  /* Las flechas ARRANCAN debajo de la frase: si salieran del centro,
+     cruzarían las palabras. */
+  .heroarco-flecha {
+    position: absolute;
+    top: 100%;
+    left: calc(10 * var(--u));
+    width: calc(92 * var(--u));
+    margin-top: calc(6 * var(--u));
+  }
+  .heroarco-flecha-corta {
+    position: absolute;
+    top: calc(-6 * var(--u));
+    left: 100%;
+    width: calc(72 * var(--u));
+    margin-left: calc(6 * var(--u));
+  }
+  /* Los trazos se dibujan solos */
+  .heroarco-flecha path,
+  .heroarco-flecha-corta path {
+    stroke-dasharray: 200;
+    stroke-dashoffset: 200;
+    animation: ha-traza 900ms var(--ease-editorial) forwards;
+    animation-delay: 1000ms;
+  }
+  .heroarco-flecha path:last-child,
+  .heroarco-flecha-corta path:last-child { animation-delay: 1500ms; }
+  @keyframes ha-traza {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* ---- La fila curva ---- */
+  .arco {
+    position: absolute;
+    inset-inline: 0;
+    /* Alta de sobra: las tarjetas del borde piden hasta 372u y el recorte se
+       cortaría contra el borde del elemento si la fila fuera más baja. */
+    /* Arranca por DEBAJO del botón. El titular en español ocupa menos alto
+       que el inglés de la referencia, así que con la coordenada original las
+       tarjetas se montaban encima del botón y de su nota. */
+    top: calc(600 * var(--u));
+    height: calc(450 * var(--u));
+    touch-action: pan-y;
+    cursor: grab;
+    user-select: none;
+    animation: ha-arco 900ms var(--ease-editorial) both;
+    animation-delay: 680ms;
+  }
+  .arco:active { cursor: grabbing; }
+  @keyframes ha-arco {
+    from { opacity: 0; transform: translateY(2.5rem); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .arco-tarjeta {
+    position: absolute;
+    inset-block: 0;
+    left: 0;
+    overflow: hidden;
+    background-color: var(--color-ink-sunken);
+    /* Sin sombra: la forma recortada ya separa la tarjeta del fondo, y una
+       sombra sobre un clip-path se corta y se ve sucia. */
+    will-change: transform, width, clip-path;
+  }
+  .arco-tarjeta img { object-fit: cover; }
+
+  .arco-marca {
+    position: absolute;
+    left: calc(14 * var(--u));
+    /* JS escribe dónde termina la forma recortada; el pie del elemento está
+       mucho más abajo y la etiqueta quedaba fuera de cuadro. */
+    bottom: var(--pie, calc(14 * var(--u)));
+    padding: calc(6 * var(--u)) calc(12 * var(--u));
+    border-radius: var(--radius-pill);
+    background-color: rgb(255 255 255 / 0.86);
+    backdrop-filter: blur(6px);
+    font-size: max(0.6875rem, calc(13 * var(--u)));
+    color: var(--color-bone);
+    white-space: nowrap;
+    max-width: calc(100% - 28 * var(--u));
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ---- Teléfono ----
+     La referencia cambia a un marco de 640 y una banda más baja. */
+  @media (width <= 51.25rem) {
+    .heroarco {
+      --u: calc(100vw / 640);
+      height: auto;
+      /* El header en teléfono mide casi 6rem: con menos, la insignia le quedaba
+         debajo y se cortaba. */
+      padding-block: clamp(7.5rem, 22vw, 9rem) 0;
+    }
+    .heroarco-centro { position: static; width: calc(100% - 2.5rem); }
+    .heroarco-nota { display: none; }
+    .arco {
+      position: relative;
+      top: 0;
+      height: clamp(14rem, 44vw, 17rem);
+      margin-top: clamp(1.25rem, 4vw, 2rem);
+    }
+    /* A 103 px de ancho la etiqueta se trunca en "Bl…" y no dice nada.
+       Mejor ninguna: la foto ya identifica al frasco. */
+    .arco-marca { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .heroarco-insignia,
+    .heroarco-titular,
+    .heroarco-bajada,
+    .heroarco-anillo,
+    .heroarco-nota,
+    .arco { animation: none; }
+    .heroarco-flecha path,
+    .heroarco-flecha-corta path { stroke-dashoffset: 0; animation: none; }
   }
 }

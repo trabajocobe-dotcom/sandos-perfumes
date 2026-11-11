@@ -4,7 +4,7 @@ import { NewsletterForm } from '@/components/commerce/NewsletterForm'
 import { CollectionRail } from '@/components/home/CollectionRail'
 import { ComoNaceUnAroma } from '@/components/home/ComoNaceUnAroma'
 import { FranjaIngredientes } from '@/components/home/FranjaIngredientes'
-import { HeroAroma, type Slide } from '@/components/home/HeroAroma'
+import { HeroArco } from '@/components/home/HeroArco'
 import { PiramideViva } from '@/components/home/PiramideViva'
 import { ProductImage } from '@/components/ui/ProductImage'
 import { Reveal, RevealItem } from '@/components/ui/Reveal'
@@ -12,53 +12,6 @@ import { recentPosts } from '@/lib/blog'
 import { bestSellers, featuredProducts, getProduct } from '@/lib/catalog'
 import { SITE } from '@/lib/site'
 import { formatCurrency, formatDate } from '@/lib/utils'
-
-const SLIDES: Slide[] = [
-  {
-    overline: 'Perfumería importada · Bogotá',
-    title: 'Encuentra tu',
-    accent: 'firma olfativa',
-    body: 'Publicamos la pirámide completa, cuánto dura y cuánto proyecta cada fragancia. Nadie debería comprar un perfume a ciegas.',
-    image: 'https://images.unsplash.com/photo-1541643600914-78b084683601?w=1800&q=80',
-    ctaLabel: 'Ver el catálogo',
-    ctaHref: '/catalogo',
-    palabra: 'AROMA',
-    etiquetas: ['18 fragancias', 'Pirámide completa', 'Duración medida'],
-  },
-  {
-    overline: 'Set de descubrimiento',
-    title: 'Prueba antes de',
-    accent: 'decidir',
-    body: 'Hasta cinco muestras de 2 ml en viales de vidrio. Si después compras el frasco, te descontamos lo que pagaste por la muestra.',
-    image: 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=1800&q=80',
-    ctaLabel: 'Armar mi set',
-    ctaHref: '/muestras',
-    palabra: 'MUESTRA',
-    etiquetas: ['5 muestras', '2 ml cada una', 'Se te descuenta'],
-  },
-  {
-    overline: 'Un minuto, cinco preguntas',
-    title: 'Dinos cómo eres y te',
-    accent: 'decimos cómo oler',
-    body: 'El test cruza tus respuestas con las ocho familias olfativas y devuelve tres fragancias, con el motivo de cada una.',
-    image: 'https://images.unsplash.com/photo-1595425970377-c9703cf48b6d?w=1800&q=80',
-    ctaLabel: 'Empezar el test',
-    ctaHref: '/quiz',
-    palabra: 'FIRMA',
-    etiquetas: ['5 preguntas', '1 minuto', '3 resultados'],
-  },
-  {
-    overline: 'Garantía de autenticidad',
-    title: 'Originales, de',
-    accent: 'distribuidor autorizado',
-    body: 'Cada frasco llega con su código de lote intacto. Si dudas de algo que te vendimos, lo retiramos y devolvemos el importe completo.',
-    image: 'https://images.unsplash.com/photo-1587017539504-67cfbddac569?w=1800&q=80',
-    ctaLabel: 'Cómo lo verificamos',
-    ctaHref: '/legal/autenticidad',
-    palabra: 'ORIGEN',
-    etiquetas: ['Código de lote', 'Factura', 'Cambios 30 días'],
-  },
-]
 
 const DETAILS = [
   {
@@ -111,7 +64,7 @@ export default function HomePage() {
 
   return (
     <>
-      <HeroAroma slides={SLIDES} />
+      <HeroArco productos={collection.slice(0, 10)} />
 
       {/* ── Franja de materias primas ────────────────────────────────────── */}
       {/* Va pegada al héroe a propósito: es el primer corte y dice de qué va

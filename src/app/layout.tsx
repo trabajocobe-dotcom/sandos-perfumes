@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Bodoni_Moda, Jost } from 'next/font/google'
+import { Bodoni_Moda, Caveat, Jost } from 'next/font/google'
 import { AuthProvider } from '@/hooks/useAuth'
 import { CartProvider } from '@/hooks/useCart'
 import { WishlistProvider } from '@/hooks/useWishlist'
@@ -28,6 +28,20 @@ const bodoni = Bodoni_Moda({
   variable: '--font-bodoni',
   weight: ['400', '500'],
   style: ['normal', 'italic'],
+  display: 'swap',
+})
+
+/**
+ * Caveat es la TERCERA familia, y entra con una regla estricta: vive solo en
+ * las notas manuscritas del héroe. El playbook avisa que con una familia basta
+ * y que la personalidad debe venir de un único elemento display; acá la nota a
+ * mano ES el gesto de la referencia, y se gana el permiso porque aparece dos
+ * veces en toda la página y en ningún otro lugar del sitio.
+ */
+const caveat = Caveat({
+  subsets: ['latin'],
+  variable: '--font-caveat',
+  weight: ['600'],
   display: 'swap',
 })
 
@@ -98,7 +112,7 @@ const organizationSchema = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es-CO" className={`${jost.variable} ${bodoni.variable}`}>
+    <html lang="es-CO" className={`${jost.variable} ${bodoni.variable} ${caveat.variable}`}>
       <head>
         {/*
           Los bloques con aparición al hacer scroll se sirven ocultos y los
